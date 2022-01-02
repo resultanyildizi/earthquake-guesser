@@ -14,9 +14,6 @@ public class Preprocessor {
 
     Instances data;
 
-    Instances testData;
-    Instances trainData;
-
     EarthqInstance[] eqPoints;
 
         public  Preprocessor(String filename) throws Exception

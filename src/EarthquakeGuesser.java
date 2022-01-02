@@ -24,6 +24,9 @@ class EarthquakeGuesser {
 
         pp.SaveProcessedData("data/preprocessed_earthquake.arff");
 
+
+        TrainTestSplitter tts = new TrainTestSplitter(pp.data);
+        tts.SaveTrainAndTestData();
     }
 
 }
