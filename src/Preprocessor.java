@@ -52,7 +52,6 @@ public class Preprocessor {
                 remove.setAttributeIndicesArray(new int[] {0, 2, 8});// EventId, EpicenterAgency, Location bilgilerini çıkar
                 remove.setInputFormat(data); // init filter
                 Instances filtered = Filter.useFilter(data, remove); // apply filter
-                System.out.println("ATT: " + filtered.numAttributes());
 
                 data = filtered;
             }catch (Exception e) {
@@ -70,8 +69,10 @@ public class Preprocessor {
                 addFilter.setInputFormat(data);
                 Instances newData = Filter.useFilter(data, addFilter);
 
+                int magnitudeIndex = data.attribute("Magnitude").index();
+
                 for (int i = 0; i < newData.numInstances(); i++) {
-                    double magnitude = newData.instance(i).value(6);
+                    double magnitude = newData.instance(i).value(magnitudeIndex);
 
                     String richter = "Minor";
 
@@ -100,8 +101,13 @@ public class Preprocessor {
 
         public void ClusterInstancesForFaultLines() {
             try {
+
+                int lonIndex = data.attribute("EpicenterLon").index();
+                int latIndex = data.attribute("EpicenterLat").index();
+
+
                 Remove remove = new Remove();
-                remove.setAttributeIndices("4,5"); //enlem ve boylamı almak için filtre uygulanıyor
+                remove.setAttributeIndicesArray(new int[] {lonIndex, latIndex}); //enlem ve boylamı almak için filtre uygulanıyor
                 remove.setInvertSelection(true);
                 remove.setInputFormat(data); // init filter
                 Instances filtered = Filter.useFilter(data, remove); // apply filter
