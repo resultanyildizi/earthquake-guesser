@@ -3,6 +3,7 @@ import weka.classifiers.functions.GaussianProcesses;
 import weka.classifiers.timeseries.HoltWinters;
 import weka.classifiers.timeseries.WekaForecaster;
 import weka.core.Instances;
+import weka.filters.supervised.attribute.TSLagMaker;
 
 import java.util.List;
 
@@ -17,12 +18,13 @@ public class TimeSeries {
 
             forecaster.getTSLagMaker().setTimeStampField("EventDate"); // date time stamp
 
+            forecaster.setBaseForecaster(new HoltWinters());
 
-            // add a month of the year indicator field
-            forecaster.getTSLagMaker().setAddMonthOfYear(true);
+            forecaster.getTSLagMaker().setMinLag(1);
+            forecaster.getTSLagMaker().setMaxLag(12);
 
-            // add a quarter of the year indicator field
-            forecaster.getTSLagMaker().setAddQuarterOfYear(true);
+
+            forecaster.getTSLagMaker().setPeriodicity(TSLagMaker.Periodicity.MONTHLY);
 
             // build the model
             forecaster.buildForecaster(trainData, System.out);
@@ -31,23 +33,26 @@ public class TimeSeries {
             // to cover up to the maximum lag. In our case, we could just supply
             // the 12 most recent historical instances, as this covers our maximum
             // lag period
+
             forecaster.primeForecaster(trainData);
 
             // forecast for 12 units (months) beyond the end of the
             // training data
-            List<List<NumericPrediction>> forecast = forecaster.forecast(12, System.out);
+            List<List<NumericPrediction>> forecast = forecaster.forecast(100, System.out);
+
+            System.out.println(forecast.size());
+            System.out.println(forecast.get(0).size());
 
             // output the predictions. Outer list is over the steps; inner list is over
             // the targets
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < forecast.size(); i++) {
                 List<NumericPrediction> predsAtStep = forecast.get(i);
-                NumericPrediction predForTarget = predsAtStep.get(0);
-                System.out.println("" + predForTarget.predicted() + " ");
+
+                for (int j = 0; j < predsAtStep.size(); j++) {
+                    NumericPrediction predForTarget = predsAtStep.get(j);
+                    System.out.println(predForTarget.predicted());
+                }
             }
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
