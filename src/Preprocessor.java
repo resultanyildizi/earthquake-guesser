@@ -41,6 +41,7 @@ public class Preprocessor {
 
             // Load data
             data = new Instances(new BufferedReader(new FileReader(filename)));
+
         }
 
         public void RemoveUnrelatedFeatures() {

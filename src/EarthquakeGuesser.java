@@ -1,16 +1,3 @@
-
-
-import weka.clusterers.ClusterEvaluation;
-import weka.clusterers.EM;
-import weka.core.*;
-import weka.core.converters.ArffSaver;
-import weka.core.converters.ConverterUtils.DataSource;
-import weka.filters.Filter;
-import weka.filters.unsupervised.attribute.Add;
-import weka.filters.unsupervised.attribute.Remove;
-
-import java.io.File;
-
 class EarthquakeGuesser {
 
     public static void main(String[] args) throws Exception {
@@ -24,9 +11,13 @@ class EarthquakeGuesser {
 
         pp.SaveProcessedData("data/preprocessed_earthquake.arff");
 
-
         TrainTestSplitter tts = new TrainTestSplitter(pp.data);
         tts.SaveTrainAndTestData();
+
+        TimeSeries hw = new TimeSeries();
+
+        hw.TrainAndTestModel(tts.trainData, tts.testData);
+
     }
 
 }
